@@ -1,3 +1,8 @@
+"""
+PyCrobat - Simone Cecire
+A simple tool to manage PDFs using a CLI written in Python.
+"""
+
 import os
 from PyPDF2 import PdfReader, PdfWriter
 
