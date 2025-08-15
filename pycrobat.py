@@ -17,6 +17,14 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+help = {
+    "exit": "Closes the program.",
+    "clear": "Clears the console.",
+    "merge": "Merges 2 or more files -> merge file1.pdf file2.pdf output.pdf",
+    "split": "Splits 1 file by a step -> split file.pdf step (1, 2, ... n)",
+    "help": "Shows this list."
+}
+
 exit = False
 
 while not exit:
@@ -50,7 +58,7 @@ while not exit:
 
                 merger.write(filename + ".pdf")
                 merger.close()
-                print(colors.OKBLUE + f"Files merged in '{filename}.pdf'" + colors.ENDC)
+                print(colors.OKGREEN + f"Files merged in '{filename}.pdf'" + colors.ENDC)
             elif len(files) == 1:
                 print(colors.FAIL + "Error: Provide 2 or more files" + colors.ENDC)
             else:
@@ -86,7 +94,7 @@ while not exit:
                             printed += 1
                             with open(f"{filename}{printed}.pdf", "wb") as output:
                                 writer.write(output)
-                    print(colors.OKBLUE + "File splitted" + colors.ENDC)
+                    print(colors.OKGREEN + "File splitted" + colors.ENDC)
         else:
             print(colors.FAIL + "Error: Arguments not provided" + colors.ENDC)
     elif "extract " in command.lower():
@@ -124,7 +132,7 @@ while not exit:
                         with open(f"{filename}{(str(start + 1))}-{str(end + 1) if start != end else start + 1}.pdf", "wb") as output:
                             writer.write(output)
 
-                        print(colors.OKBLUE + f"Page extracted and saved in '{filename}{(str(start + 1))}-{str(end + 1) if start != end else start + 1}.pdf'" + colors.ENDC)
+                        print(colors.OKGREEN + f"Page extracted and saved in '{filename}{(str(start + 1))}-{str(end + 1) if start != end else start + 1}.pdf'" + colors.ENDC)
         else:
             print(colors.FAIL + "Error: Arguments not provided" + colors.ENDC)
     elif "delete " in command.lower():
@@ -167,7 +175,7 @@ while not exit:
 
                         with open(f"{filename}.pdf", "wb") as output:
                             writer.write(output)
-                        print(colors.OKBLUE + f"Pages '{', '.join(str(p) for p in pages)}' deleted" + colors.ENDC)
+                        print(colors.OKGREEN + f"Pages '{', '.join(str(p) for p in pages)}' deleted" + colors.ENDC)
         else:
             print(colors.FAIL + "Error: Arguments not provided" + colors.ENDC)
     elif "view " in command.lower():
@@ -185,5 +193,8 @@ while not exit:
                     print(page.extract_text())
         else:
             print(colors.FAIL + "Error: Too many arguments" + colors.ENDC)
+    elif command.lower() == "help":
+        for h in help:
+            print(colors.HEADER + colors.BOLD + f"{h + colors.ENDC}: {help[h]}")
     else:
         print(colors.FAIL + f"Error: Invalid command '{command}'" + colors.ENDC)
