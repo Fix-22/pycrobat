@@ -38,71 +38,73 @@ while not exit:
                 print("Files not provided")
     elif "split " in command.lower():
         command_splitted = command.replace("split ", "").split(" ")
-        error = None
 
-        filename = command_splitted[0]
-        step = int(command_splitted[1])
+        if len(command_splitted) == 2:
+            filename = command_splitted[0]
+            step = int(command_splitted[1])
 
-        if not os.path.isfile(filename):
-            error = f"'{filename}' is not a valid file"
-        
-        reader = PdfReader(filename)
+            if not os.path.isfile(filename):
+                print(f"'{filename}' is not a valid file")
+            else:
+                reader = PdfReader(filename)
 
-        if step <= 0 or step > len(reader.pages):
-            error = f"Step '{step}' is not valid"
-        
-        if error:
-            print(error)
-        else:
-            writer = PdfWriter()
-            printed = 0
-            filename = filename.replace(".pdf", "")
-
-            for i in range(len(reader.pages)):
-                writer.add_page(reader.pages[i])
-                
-                if (i + 1) % step == 0:
-                    printed += 1
-                    with open(f"{filename}{printed}.pdf", "wb") as output:
-                        writer.write(output)
+                if step <= 0 or step > len(reader.pages):
+                    print(f"Step '{step}' is not valid")
+                else:
                     writer = PdfWriter()
-                elif (i + 1) == len(reader.pages):
-                    printed += 1
-                    with open(f"{filename}{printed}.pdf", "wb") as output:
-                        writer.write(output)
-            print("File splitted")
+                    printed = 0
+                    filename = filename.replace(".pdf", "")
+
+                    for i in range(len(reader.pages)):
+                        writer.add_page(reader.pages[i])
+                        
+                        if (i + 1) % step == 0:
+                            printed += 1
+                            with open(f"{filename}{printed}.pdf", "wb") as output:
+                                writer.write(output)
+                            writer = PdfWriter()
+                        elif (i + 1) == len(reader.pages):
+                            printed += 1
+                            with open(f"{filename}{printed}.pdf", "wb") as output:
+                                writer.write(output)
+                    print("File splitted")
+        else:
+            print("Arguments not provided")
     elif "extract " in command.lower():
         command_splitted = command.replace("extract ", "").split(" ")
-        error = None
-
-        filename = command_splitted[0]
-        pages_str = command_splitted[1]
-
-        if not os.path.isfile(filename):
-            error = f"'{filename}' is not a valid file"
         
-        reader = PdfReader(filename)
+        if len(command_splitted) == 2:
+            filename = command_splitted[0]
+            pages_str = command_splitted[1]
 
-        pages = pages_str.split("-")
-        if len(pages) == 1:
-            pages.append(pages[0])
+            if not os.path.isfile(filename):
+                print(f"'{filename}' is not a valid file")
+            else:
+                reader = PdfReader(filename)
+
+                pages = pages_str.split("-")
+                
+                if len(pages) == 1:
+                    pages.append(pages[0])
+                
+                if len(pages) > 2:
+                    print("Pages are not valid")
+                else:
+                    writer = PdfWriter()
+                    filename = filename.replace(".pdf", "")
         
-        if len(pages) > 2:
-            error = "Pages are not valid"
+                    start = int(pages[0]) - 1
+                    end = int(pages[1]) - 1 if pages[1] != '' else len(reader.pages) - 1
 
-        if error:
-            print(error)
+                    if start < 0 or end > len(reader.pages) - 1 or start > end:
+                        print("Pages are not valid")
+                    else:
+                        for i in range(start, end + 1):
+                            writer.add_page(reader.pages[i])
+
+                        with open(f"{filename}{(str(start + 1))}-{str(end + 1) if start != end else start + 1}.pdf", "wb") as output:
+                            writer.write(output)
         else:
-            writer = PdfWriter()
-            filename = filename.replace(".pdf", "")
-   
-            start = int(pages[0]) - 1
-            end = int(pages[1]) - 1 if pages[1] != '' else len(reader.pages) - 1
-
-            for i in range(start, end + 1):
-                writer.add_page(reader.pages[i])
-
-            with open(f"{filename}{(str(start + 1))}-{str(end + 1) if start != end else start + 1}.pdf", "wb") as output:
-                writer.write(output)
+            print("Arguments not provided")
     else:
         print("Invalid command")
